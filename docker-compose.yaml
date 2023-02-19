@@ -25,7 +25,6 @@ services:
     restart: always
     environment:
       POSTGRES_HOST: db
-      DEBUG: False
     depends_on:
       db:
         condition: service_healthy
@@ -36,13 +35,12 @@ services:
 
   collect_static:
     build:
-      target: dev_image
+     target: dev_image
     env_file: .env
     entrypoint: ''
     volumes:
       - django_static:/opt/static/
     command: python3 manage.py collectstatic -c --no-input
-
 
   frontend:
       image: sermalenk/skypro-front:lesson-34
