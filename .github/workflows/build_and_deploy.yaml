@@ -4,8 +4,6 @@ on:
   push:
     branch:
       - 'main'
-      - 'dev_34'
-
 
 jobs:
   build:
@@ -55,8 +53,8 @@ jobs:
             cd diploma_10
             docker compose pull
             docker compose up -d
-      - name: Cleaup
-        if: always
+      - name: Clear after deploy
+        if: always()
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
