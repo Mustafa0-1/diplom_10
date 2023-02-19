@@ -24,4 +24,4 @@ jobs:
           target: prod_image
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nugno:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diplom_10:latest
