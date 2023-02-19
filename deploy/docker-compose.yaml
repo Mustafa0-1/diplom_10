@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:12.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - diploma_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  api:
+    image: keysmustafa/diplom_10:latest
+    env_file: .env
+    restart: always
+    environment:
+      POSTGRES_HOST: db
+      DEBUG: False
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+      image: sermalenk/skypro-front:lesson-34
+      restart: always
+      ports:
+        - "80:80"
+      depends_on:
+        api:
+          condition: service_healthy
+
+volumes:
+  diploma_pg_data:
