@@ -51,8 +51,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd diploma_10
-            docker pull
-            docker up -d
+            sudo docker compose pull
+            sudo docker compose up -d
       - name: Clear after deploy
         if: always()
         uses: appleboy/ssh-action@master
