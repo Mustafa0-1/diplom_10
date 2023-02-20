@@ -35,7 +35,7 @@ services:
 
   collect_static:
     build:
-     target: dev_image
+      target: dev_image
     env_file: .env
     entrypoint: ''
     volumes:
