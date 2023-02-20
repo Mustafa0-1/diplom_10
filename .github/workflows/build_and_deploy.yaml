@@ -1,74 +1,64 @@
-name: Deploy
+name: Test, build and deploy
 
 on:
-  workflow_run:
-    workflows: [ main_action ]
-    types:
-      - completed
+  push:
+    branch:
+      - 'main'
 
 jobs:
-  on-success:
+  build:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - run: echo 'The triggering workflow passed'
-  on-failure:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          target: prod_image
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
+
+
+  deploy:
+    needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
-      - run: echo 'The triggering workflow failed'
-
-  on:
-    workflow_run:
-      workflows: Tests and build
-  #    branches: dev_37
-      types: completed
-
-  jobs:
-
-    deploy:
-      runs-on: ubuntu-latest
-      environment:
-        name: Production
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
-        - name: Update Docker Compose
-          env:
-            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          run: |
-            envsubst 'DOCKERHUB_USERNAME' < deploy/docker-compose.prod.yaml > deploy/docker-compose.yaml
-            rm -f deploy/docker-compose.prod.yaml
-        - name: Decrypt secrets
-          uses: anthonykgross/ansible-vault-cli-github-action@v1
-          with:
-            vault_key: ${{ secrets.VAULT_PASSWORD }}
-            command: "ansible-vault decrypt deploy/.env"
-        - name: Copy on server
-          uses: appleboy/scp-action@master
-          with:
-            host: ${{ secrets.SSH_HOST }}
-            username: ${{ secrets.SSH_USERNAME }}
-            password: ${{ secrets.SSH_PASSWORD }}
-            source: "deploy/*"
-            target: "diploma_10"
-            strip_components: 1
-        - name: Run compose
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.SSH_HOST }}
-            username: ${{ secrets.SSH_USERNAME }}
-            password: ${{ secrets.SSH_PASSWORD }}
-            script: |
-              cd diploma_10
-              docker compose pull
-              docker compose up -d
-        - name: Clear after deploy
-          if: always()
-          uses: appleboy/ssh-action@master
-          with:
-            host: ${{ secrets.SSH_HOST }}
-            username: ${{ secrets.SSH_USERNAME }}
-            password: ${{ secrets.SSH_PASSWORD }}
-            script: |
-              docker system prune -a -f
+      - uses: actions/checkout@v3
+      - uses: anthonykgross/ansible-vault-cli-github-action@v1
+        with:
+          vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+          command: "ansible-vault decrypt deploy/.env"
+      - name: Copy on Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "deploy/*"
+          target: "diploma_10"
+          strip_components: 1
+      - name: Run compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd diploma_10
+            docker compose pull
+            docker compose up -d
+      - name: Clear after deploy
+        if: always()
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker system prune -a -f
