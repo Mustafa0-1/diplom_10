@@ -46,12 +46,12 @@ services:
       image: sermalenk/skypro-front:lesson-34
       restart: always
       ports:
-        - "80:80"
-      depends_on:
-        api:
-          condition: service_healthy
-        collect_static:
-          condition: service_completed_successfully
+        - "8080:80"
+#      depends_on:
+#        api:
+#          condition: service_healthy
+#        collect_static:
+#          condition: service_completed_successfully
 #      networks:
 #        - frontend_nw
       volumes:
