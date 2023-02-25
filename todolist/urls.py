@@ -5,6 +5,8 @@ from django.urls import include, path
 urlpatterns = [
     path('core/', include(('todolist.core.urls', 'core'))),
     path('admin/', admin.site.urls),
+    path('oauth/', include('social_django.urls', namespace='social')),
+
 ]
 if settings.DEBUG:
     urlpatterns += [

@@ -44,6 +44,7 @@ services:
 
   frontend:
       image: sermalenk/skypro-front:lesson-34
+      platform: linux/amd64
       restart: always
       ports:
         - "8080:8000"
