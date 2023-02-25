@@ -43,7 +43,8 @@ services:
     command: python3 manage.py collectstatic -c --no-input
 
   frontend:
-      image: sermalenk/skypro-front:lesson-34
+      image: sermalenk/skypro-front:lesson-36
+      platform: linux/amd64
       restart: always
       ports:
         - "8080:8000"
