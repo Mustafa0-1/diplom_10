@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres:12.4
+    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -36,7 +37,7 @@ services:
     command: python3 manage.py collectstatic -c --no-input
 
   frontend:
-      image: sermalenk/skypro-front:lesson-36
+      image: sermalenk/skypro-front:lesson-37
       platform: linux/amd64
       restart: always
       ports:
