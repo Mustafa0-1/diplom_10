@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres:12.4
+    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -17,7 +18,7 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diplom_10:latest
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     restart: always
     environment:
@@ -28,7 +29,7 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    image: keysmustafa/diplom_10:latest
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     entrypoint: ''
     volumes:
@@ -36,9 +37,11 @@ services:
     command: python3 manage.py collectstatic -c --no-input
 
   frontend:
-      image: sermalenk/skypro-front:lesson-34
+      image: sermalenk/skypro-front:lesson-37
+      platform: linux/amd64
       restart: always
       ports:
+        - "8010:8010"
         - "8010:80"
 #      depends_on:
 #        api:
