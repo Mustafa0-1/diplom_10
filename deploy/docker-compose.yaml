@@ -17,7 +17,7 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diplom_10:latest
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     restart: always
     environment:
@@ -28,7 +28,7 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    image: keysmustafa/diplom_10:latest
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     entrypoint: ''
     volumes:
@@ -36,7 +36,8 @@ services:
     command: python3 manage.py collectstatic -c --no-input
 
   frontend:
-      image: sermalenk/skypro-front:lesson-34
+      image: sermalenk/skypro-front:lesson-37
+      platform: linux/amd64
       restart: always
       ports:
         - "8010:80"
