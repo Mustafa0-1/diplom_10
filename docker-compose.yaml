@@ -4,7 +4,6 @@ services:
 
   db:
     image: postgres:12.4-alpine
-    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -44,11 +43,9 @@ services:
     command: python3 manage.py collectstatic -c --no-input
 
   frontend:
-      image: sermalenk/skypro-front:lesson-37
-      platform: linux/amd64
+      image: sermalenk/skypro-front:lesson-34
       restart: always
       ports:
-        - "8080:80"
         - "8080:8000"
 #      depends_on:
 #        api:
