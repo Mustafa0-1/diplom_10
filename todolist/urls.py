@@ -5,12 +5,10 @@ from django.urls import include, path
 urlpatterns = [
     path('core/', include(('todolist.core.urls', 'todolist.core'))),
     path('goals/', include(('todolist.goals.urls', 'todolist.goals'))),
+    path('bot/', include(('todolist.bot.urls', 'todolist.bot'))),
     path('admin/', admin.site.urls),
     path('oauth/', include('social_django.urls', namespace='social')),
-
-
 ]
+
 if settings.DEBUG:
-    urlpatterns += [
-        path('api-auth/', include('rest_framework.urls')),
-    ]
+    urlpatterns += [path('api-auth/', include('rest_framework.urls'))]
