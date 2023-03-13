@@ -10,11 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """Базовый класс для запуска и управления ботом"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tg_client = TgClient()
 
     def handle(self, *args, **options):
+        """Ручка проверяет обновления чата. При получении новых сообщений от пользователей
+             отправляет их на ручку -> handle_message"""
         offset = 0
 
         logger.info('Bot start handling')
@@ -25,6 +29,9 @@ class Command(BaseCommand):
                 self.handle_message(item.message)
 
     def handle_message(self, msg: Message):
+        """Ручка определяющая верифицирован пользователь или нет
+               верифицированных пользователей отправляет на ручку -> handle_authorized
+               не верифицированных -> handle_unauthorized, для получения кода верификации"""
         tg_user, created = TgUser.objects.get_or_create(chat_id=msg.chat.id)
 
         if tg_user.user:

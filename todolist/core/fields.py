@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class PasswordField(serializers.CharField):
+    """Django-форма для пароля"""
 
     def __init__(self, **kwargs):
         kwargs['style'] = {'input_type': 'password'}

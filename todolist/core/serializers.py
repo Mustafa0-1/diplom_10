@@ -8,25 +8,31 @@ from todolist.core.models import User
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для создания пользователя"""
     password = PasswordField(required=True)
     password_repeat = serializers.CharField(required=True, style={'input_type': 'password'}, write_only=True)
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора и полей модели сериализатора"""
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'password', 'password_repeat')
 
     def validate(self, attrs: dict) -> dict:
+        """Метод проверяет, совпадают ли введенные пароли"""
         if attrs['password'] != attrs['password_repeat']:
             raise ValidationError({'password_repeat': 'Passwords must match'})
         return attrs
 
     def create(self, validated_data: dict) -> User:
+        """Метод удаляет значение поля [password_repeat], хэширует пароль и создает пользователя"""
+
         del validated_data['password_repeat']
         validated_data['password'] = make_password(validated_data['password'])
         return super().create(validated_data)
 
 
 class LoginSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для проверки данных пользователя на входе"""
     username = serializers.CharField(required=True)
     password = PasswordField(required=True)
 
@@ -36,6 +42,7 @@ class LoginSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'first_name', 'last_name', 'email')
 
     def create(self, validated_data: dict) -> User:
+        """Метод проводит аутентификацию пользователя"""
         if not (user := authenticate(
                 username=validated_data['username'],
                 password=validated_data['password'],
@@ -45,21 +52,25 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора пользователя"""
     class Meta:
         model = User
         fields = ('id', 'first_name', 'last_name', 'email', 'username')
 
 
 class UpdatePasswordSerializer(serializers.Serializer):
+    """Класс модели сериализатора для смены пароля пользователя"""
     old_password = PasswordField(required=True)
     new_password = PasswordField(required=True)
 
     def validate_old_password(self, old_password: str) -> str:
+        """Метод проверяет, совпадает ли значение поля ['old_password'] с действующим паролем"""
         if not self.instance.check_password(old_password):
             raise ValidationError('Password is incorrect')
         return old_password
 
     def update(self, instance: User, validated_data: dict) -> User:
+        """Метод хэширует значение поля ['new_password'] и обновляет пароль пользователя в БД"""
         instance.set_password(validated_data['new_password'])
         instance.save(update_fields=('password',))
         return instance

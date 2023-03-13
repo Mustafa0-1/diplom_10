@@ -9,6 +9,7 @@ from todolist.bot.tg.client import TgClient
 
 
 class VerificationView(GenericAPIView):
+    """Ручка для указания кода верификации бота"""
     model = TgUser
     permission_classes = [IsAuthenticated]
     serializer_class = TgUserSerializer

@@ -10,32 +10,43 @@ from todolist.goals.models import GoalCategory, Goal, Board, GoalComment, BoardP
 
 
 class GoalCategoryCreateSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для создания категории целей"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = GoalCategory
         read_only_fields = ('id', 'created', 'updated', 'user', 'is_deleted')
         fields = '__all__'
 
 
 class GoalCategorySerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора категории целей"""
     user = ProfileSerializer(read_only=True)
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = GoalCategory
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для создания цели"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = Goal
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_category(self, value: GoalCategory) -> GoalCategory:
+        """
+        Метод для валидации данных категории целей. Метод проверяет, является ли
+        пользователь создателем категории, или является ли он участником доски с этой
+        категорией в роли writer
+        """
         if value.is_deleted:
             raise ValidationError('Category not found')
         if self.context['request'].user.id != value.user_id:
@@ -49,14 +60,20 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора цели"""
     user = ProfileSerializer(read_only=True)
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = Goal
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
     def validate_category(self, value: GoalCategory) -> GoalCategory:
+        """
+        Метод для валидации данных категории целей.
+        Метод проверяет, является ли пользователь создателем категории целей
+        """
         if value.is_deleted:
             raise ValidationError('Category not found')
         if self.context['request'].user.id != value.user_id:
@@ -65,6 +82,7 @@ class GoalSerializer(serializers.ModelSerializer):
 
 
 class GoalCommentCreateSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для создания комментария"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def validate_goal(self, value: Goal) -> Goal:
@@ -79,12 +97,14 @@ class GoalCommentCreateSerializer(serializers.ModelSerializer):
         return value
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = GoalComment
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user')
 
 
 class GoalCommentSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора комментария"""
     user = ProfileSerializer(read_only=True)
 
     def validate_goal(self, value: Goal) -> Goal:
@@ -95,37 +115,45 @@ class GoalCommentSerializer(serializers.ModelSerializer):
         return value
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = GoalComment
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'user', 'goal')
 
 
 class BoardCreateSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора для создания новой доски"""
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = Board
         read_only_fields = ('id', 'created', 'updated', 'is_deleted')
         fields = '__all__'
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора участников доски"""
     role = serializers.ChoiceField(required=True, choices=BoardParticipant.Role.choices[1:])
     user = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = BoardParticipant
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'board')
 
 
 class BoardSerializer(serializers.ModelSerializer):
+    """Класс модели сериализатора доски"""
     participants = BoardParticipantSerializer(many=True)
 
     class Meta:
+        """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = Board
         fields = '__all__'
         read_only_fields = ('id', 'created', 'updated', 'is_deleted')
 
     def update(self, instance: Board, validated_data: dict) -> Board:
+        """Метод для редактирования и добавления участников доски"""
         with transaction.atomic():
             BoardParticipant.objects.filter(board=instance).exclude(user=self.context['request'].user).delete()
             BoardParticipant.objects.bulk_create([
