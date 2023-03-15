@@ -26,6 +26,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: python3 -c 'import http.client;http.client.HTTPConnection("127.0.0.1:8000", timeout=1).request("GET", "/ping/")'
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
   collect_static:
     image: keysmustafa/diploma_10:latest
