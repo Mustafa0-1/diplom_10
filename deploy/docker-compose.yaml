@@ -41,7 +41,7 @@ services:
       platform: linux/amd64
       restart: always
       ports:
-        - "8010:80"
+        - "80:80"
 #      depends_on:
 #        api:
 #          condition: service_healthy
