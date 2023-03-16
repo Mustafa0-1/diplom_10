@@ -61,7 +61,8 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    build: .
+    image: sermalenk/skypro-front:lesson-38
+    platform: linux/amd64
     env_file: .env
     restart: always
     environment:
