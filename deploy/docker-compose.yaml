@@ -52,6 +52,7 @@ services:
   bot:
     build: .
     env_file: .env
+    restart: always
     environment:
       POSTGRES_HOST: db
 #    depends_on:
