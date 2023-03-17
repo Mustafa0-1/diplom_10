@@ -63,10 +63,10 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    build:
-      target: dev_image
     image: sermalenk/skypro-front:lesson-38
     platform: linux/amd64
+    build:
+      target: dev_image
     env_file: .env
     entrypoint: ''
     environment:
