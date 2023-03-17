@@ -76,7 +76,7 @@ services:
 #        condition: service_healthy
     volumes:
       - ./todolist/bot/:/opt/todolist/bot/
-    command: python manage.py runbot
+    command: python3 manage.py runbot
     restart: always
 
 
