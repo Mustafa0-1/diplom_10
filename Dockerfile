@@ -9,7 +9,7 @@ WORKDIR /tmp
 
 COPY poetry.lock pyproject.toml ./
 
-RUN poetry export --without dev -f requirements.txt -o /tmp/requirements.prod.txt  && \
+RUN poetry export --without dev -f requirements.txt -o /tmp/requirements.prod.txt && \
     poetry export --with dev -f requirements.txt -o /tmp/requirements.dev.txt && \
     rm /tmp/poetry.lock /tmp/pyproject.toml && \
     pip uninstall poetry -y
