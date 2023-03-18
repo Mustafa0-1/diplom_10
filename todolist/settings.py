@@ -9,7 +9,7 @@ ENV_PATH = BASE_DIR.joinpath('.env')
 if ENV_PATH.exists() and ENV_PATH.is_file():
     env.read_envfile(ENV_PATH)
 
-SECRET_KEY = env.str('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG', default=False)
 
