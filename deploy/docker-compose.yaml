@@ -4,7 +4,6 @@ services:
 
   db:
     image: postgres:12.4
-    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -23,7 +22,7 @@ services:
     restart: always
     environment:
       POSTGRES_HOST: db
-      DEBUG: False
+      DEBUG: True
 #    depends_on:
 #      db:
 #        condition: service_healthy
@@ -66,7 +65,6 @@ services:
     volumes:
       - ./todolist/bot/:/opt/todolist/bot/
     command: python manage.py runbot
-    restart: always
 
 
 volumes:

@@ -6,7 +6,6 @@ services:
 
   db:
     image: postgres:12.4-alpine
-    env_file: .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -77,7 +76,6 @@ services:
     volumes:
       - ./todolist/bot/:/opt/todolist/bot/
     command: python manage.py runbot
-    restart: always
 
 
 volumes:
