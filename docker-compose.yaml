@@ -62,6 +62,7 @@ services:
   bot:
     image: keysmustafa/diploma_10:latest
     platform: linux/amd64
+    restart: always
     build:
       target: dev_image
     env_file: .env
