@@ -17,7 +17,7 @@ services:
       retries: 15
 
   api:
-    image: ${DOCKERHUB_USERNAME}/diploma_10:${TAG_NAME}
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     restart: always
     environment:
@@ -28,7 +28,7 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    image: ${DOCKERHUB_USERNAME}/diploma_10:${TAG_NAME}
+    image: keysmustafa/diploma_10:latest
     env_file: .env
     entrypoint: ''
     volumes:
@@ -49,7 +49,7 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    image: ${DOCKERHUB_USERNAME}/diploma_10:${TAG_NAME}
+    image: keysmustafa/diploma_10:latest
     platform: linux/amd64
     restart: always
     build:
