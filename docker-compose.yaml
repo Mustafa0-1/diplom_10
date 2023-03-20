@@ -21,6 +21,7 @@ services:
       - "5432:5432"
 
   api:
+    image: keysmustafa/diploma_10:latest
     build:
       target: dev_image
     restart: always
