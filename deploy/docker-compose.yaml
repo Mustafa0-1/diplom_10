@@ -17,9 +17,8 @@ services:
       retries: 15
 
   api:
-    image: ${DOCKERHUB_USERNAME}/diploma_10:${TAG_NAME}
-    env_file:
-      - .env
+    image: keysmustafa/diploma_10:latest
+    env_file: .env
     restart: always
     environment:
       POSTGRES_HOST: db
@@ -29,14 +28,12 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    image: ${DOCKERHUB_USERNAME}/todolist:${TAG_NAME}
-    build: .
-    env_file:
-      - .env
+    image: keysmustafa/diploma_10:latest
+    env_file: .env
     entrypoint: ''
-    command: python3 manage.py collectstatic -c --no-input
     volumes:
-      - django_static:/opt/static
+      - django_static:/opt/static/
+    command: python3 manage.py collectstatic -c --no-input
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
@@ -52,11 +49,13 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    image: ${DOCKERHUB_USERNAME}/diploma_10:${TAG_NAME}
-    build: .
+    image: keysmustafa/diploma_10:latest
     platform: linux/amd64
-    env_file:
-      - .env
+    restart: always
+    build:
+      target: dev_image
+    env_file: .env
+    entrypoint: ''
     environment:
       POSTGRES_HOST: db
 #    depends_on:

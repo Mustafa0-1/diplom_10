@@ -1,3 +1,5 @@
+
+
 version: '3.8'
 
 services:
@@ -19,10 +21,10 @@ services:
       - "5432:5432"
 
   api:
-    build: .
+    build:
+      target: dev_image
     restart: always
-    env_file:
-      - .env
+    env_file: .env
     environment:
       POSTGRES_HOST: db
     depends_on:
@@ -34,9 +36,9 @@ services:
       - ./todolist/:/opt/todolist
 
   collect_static:
-    build: .
-    env_file:
-      - .env
+    build:
+      target: dev_image
+    env_file: .env
     entrypoint: ''
     volumes:
       - django_static:/opt/static/
@@ -58,10 +60,12 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    build: .
     platform: linux/amd64
-    env_file:
-      - .env
+    restart: always
+    build:
+      target: dev_image
+    env_file: .env
+    entrypoint: ''
     environment:
       POSTGRES_HOST: db
 #    depends_on:
