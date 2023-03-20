@@ -19,25 +19,11 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          target: prod_image
+          target: prod_image and dev_image
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
-  build_and_push:
-      runs-on: ubuntu-latest
-      steps:
-        - name: clone code
-          uses: actions/checkout@v2
-        - name: docker build
-          run: docker build -t keysmustafa/diploma_10:latest .
-        - name: docker login
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_TOKEN }}
-        - name: docker push
-          run: docker push keysmustafa/diploma_10:latest
 
   deploy:
     needs: build
