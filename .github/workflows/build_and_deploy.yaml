@@ -1,60 +1,61 @@
-name: Test, build and deploy
+name: Build and deploy
 
 on:
   push:
-    branch:
-      - 'main'
+    tags:
+      - 'v*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: docker/login-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/setup-buildx-action@v2
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          target: prod_image
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
-
-
-  build_and_push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: clone code
-        uses: actions/checkout@v2
-      - name: docker build
-        run: docker build -t keysmustafa/diploma_10:latest .
-      - name: docker login
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: docker push
-        run: docker push keysmustafa/diploma_10:latest
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
 
   deploy:
+    runs-on: ubuntu-22.04
     needs: build
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: anthonykgross/ansible-vault-cli-github-action@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get tag
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Update docker compose
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          TAG_NAME: ${{ steps.vars.outputs.tag }}
+        run: |
+          envsubst '$DOCKERHUB_USERNAME, $TAG_NAME' < deploy/docker-compose.prod.yaml > deploy/docker-compose.yaml
+          rm -f deploy/docker-compose.prod.yaml
+      - name: Decrypt .env
+        uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
           vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           command: "ansible-vault decrypt deploy/.env"
-      - name: Copy on Server
+      - name: Copy on server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "deploy/*"
           target: "diploma_10"
@@ -63,18 +64,18 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd diploma_10
-            docker compose pull
-            docker compose up -d
+            docker-compose pull
+            docker-compose up -d
       - name: Clear after deploy
         if: always()
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker system prune -a -f
