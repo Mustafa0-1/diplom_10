@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  build:
+  builds:
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
