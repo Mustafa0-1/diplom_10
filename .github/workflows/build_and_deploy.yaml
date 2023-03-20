@@ -31,7 +31,7 @@ jobs:
 
 
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Checkout
@@ -47,7 +47,8 @@ jobs:
           envsubst '$DOCKERHUB_USERNAME, $TAG_NAME' < deploy/docker-compose.prod.yaml > deploy/docker-compose.yaml
           rm -f deploy/docker-compose.prod.yaml
       - name: Decrypt .env
-        uses: anthonykgross/ansible-vault-cli-github-action@v1
+      - uses: actions/checkout@v3
+      - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
           vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           command: "ansible-vault decrypt deploy/.env"
