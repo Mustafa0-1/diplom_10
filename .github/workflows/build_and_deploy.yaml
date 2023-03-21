@@ -9,14 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
       - uses: actions/checkout@v3
-      - name: Login to Docker Hub
       - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up Docker Buildx
       - uses: docker/setup-buildx-action@v2
       - name: Build and push
         uses: docker/build-push-action@v4
@@ -46,13 +43,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: clone code
         uses: actions/checkout@v3
-      - name: Update Docker Compose
+      - name: render configs
         run: |
           cat deploy/docker-compose.yaml | envsubst > deploy/docker-compose.yaml
           cat deploy/.env | envsubst > deploy/.env
-      - name: Checkout
       - uses: actions/checkout@v3
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
