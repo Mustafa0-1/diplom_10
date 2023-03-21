@@ -44,14 +44,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: clone code
-        uses: actions/checkout@v2
-      - name: render configs
-        run: |
-          mkdir deploy
-          cat docker-compose.yaml | envsubst > deploy/docker-compose.yaml
-          cat docker_ci_config.py | envsubst > deploy/docker_config.py
-      - name: clone files to server
       - uses: actions/checkout@v3
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
