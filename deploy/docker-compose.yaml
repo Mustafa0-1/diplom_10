@@ -29,8 +29,9 @@ services:
 
   collect_static:
     image: keysmustafa/diploma_10:dev_38-2-4470141933
-    env_file: .env
-    entrypoint: ''
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - django_static:/opt/static/
     command: python3 manage.py collectstatic -c --no-input

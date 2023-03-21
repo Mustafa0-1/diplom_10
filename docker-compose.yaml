@@ -36,9 +36,13 @@ services:
       - ./todolist/:/opt/todolist
 
   collect_static:
+    image: keysmustafa/diploma_10:dev_38-2-4470141933
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - django_static:/opt/static/
+    command: python3 manage.py collectstatic -c --no-input
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
