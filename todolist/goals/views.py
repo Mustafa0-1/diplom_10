@@ -88,9 +88,9 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     permission_classes = [GoalCategoryPermissions]
 
     def get_queryset(self):
-        """Метод возвращает из базы queryset категории"""
+        """Метод возвращает из базы queryset списка категорий"""
         return GoalCategory.objects.filter(
-            board_participants__user_id=self.request.user.id,
+            user_id=self.request.user.id,
             is_deleted=False
         )
 

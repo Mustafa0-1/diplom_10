@@ -37,12 +37,8 @@ services:
 
   collect_static:
     build:
-      target: dev_image
-    env_file: .env
-    entrypoint: ''
-    volumes:
-      - django_static:/opt/static/
-    command: python3 manage.py collectstatic -c --no-input
+      context: .
+      dockerfile: Dockerfile
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
