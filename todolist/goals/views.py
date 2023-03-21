@@ -77,7 +77,7 @@ class GoalCategoryListView(ListAPIView):
     def get_queryset(self):
         """Метод возвращает из базы queryset списка категорий"""
         return GoalCategory.objects.filter(
-            board_participants__user_id=self.request.user.id,
+            user_id=self.request.user.id,
             is_deleted=False
         )
 
