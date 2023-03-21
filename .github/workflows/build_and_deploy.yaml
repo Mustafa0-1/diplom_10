@@ -22,7 +22,7 @@ jobs:
           target: prod_image
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:dev_38-2-4470141933
 
 
   build_and_push:
