@@ -50,6 +50,7 @@ jobs:
         run: |
           mkdir deploy
           cat deploy/docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          rm -f deploy/docker-compose-ci.yaml
       - uses: actions/checkout@v2
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
