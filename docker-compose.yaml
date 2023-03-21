@@ -34,7 +34,7 @@ services:
       - ./todolist/:/opt/todolist
 
   collect_static:
-    image: keysmustafa/diploma_10:${{TAG_NAME}}
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     build:
       context: .
       dockerfile: Dockerfile
