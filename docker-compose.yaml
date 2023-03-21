@@ -40,6 +40,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file: .env
+    entrypoint: ''
     volumes:
       - django_static:/opt/static/
     command: python3 manage.py collectstatic -c --no-input
