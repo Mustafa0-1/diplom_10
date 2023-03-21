@@ -17,7 +17,7 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diploma_10:dev_38-2-4470141933
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .env
     restart: always
     environment:
@@ -28,7 +28,7 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    image: keysmustafa/diploma_10:dev_38-2-4470141933
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     build:
       context: .
       dockerfile: Dockerfile
@@ -52,7 +52,7 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    image: keysmustafa/diploma_10:dev_38-2-4470141933
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     platform: linux/amd64
     restart: always
     build:
