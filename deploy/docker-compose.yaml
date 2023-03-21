@@ -28,9 +28,12 @@ services:
 #        condition: service_healthy
 
   collect_static:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: keysmustafa/diploma_10:dev_38-2-4470141933
+    env_file: .env
+    entrypoint: ''
+    volumes:
+      - django_static:/opt/static/
+    command: python3 manage.py collectstatic -c --no-input
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
