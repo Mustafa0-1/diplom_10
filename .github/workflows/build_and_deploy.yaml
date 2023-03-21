@@ -54,7 +54,6 @@ jobs:
           cat deploy/.env | envsubst > deploy/.env
       - name: Checkout
       - uses: actions/checkout@v3
-      - name: Decrypt secrets
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
           vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
