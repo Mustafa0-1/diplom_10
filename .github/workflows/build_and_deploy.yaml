@@ -49,7 +49,6 @@ jobs:
         run: |
           cat deploy/docker-compose.yaml | envsubst > deploy/docker-compose.yaml
           cat deploy/.env | envsubst > deploy/.env
-          rm -f deploy/docker-compose.yaml
       - uses: actions/checkout@v3
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
