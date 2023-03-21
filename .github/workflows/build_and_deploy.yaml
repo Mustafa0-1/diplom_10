@@ -24,6 +24,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
+
   build_and_push:
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: render configs
         run: |
           mkdir deploy
