@@ -76,8 +76,8 @@ class GoalCategoryListView(ListAPIView):
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка категорий"""
-        return GoalCategory.objects.filter(
-            user_id=self.request.user.id,
+        return GoalCategory.objects.prefetch_related('board__participants').filter(
+            board__participants__user_id=self.request.user.id,
             is_deleted=False
         )
 
@@ -89,8 +89,8 @@ class GoalCategoryView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка категорий"""
-        return GoalCategory.objects.filter(
-            user_id=self.request.user.id,
+        return GoalCategory.objects.prefetch_related('board__participants').filter(
+            board__participants__user_id=self.request.user.id,
             is_deleted=False
         )
 
