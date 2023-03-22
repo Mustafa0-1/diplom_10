@@ -17,7 +17,7 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: $IMAGE_TAG:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .env
     restart: always
     environment:
