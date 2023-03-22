@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.db.models import Q
-from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
@@ -131,18 +130,17 @@ class GoalView(RetrieveUpdateDestroyAPIView):
     permission_classes = [GoalPermissions]
     serializer_class = GoalSerializer
 
-    def get_queryset(self) -> QuerySet[Goal]:
+    def get_queryset(self):
         """Метод возвращает из базы queryset цели"""
-        return (
-            Goal.objects
-            .filter(category__board__participants__user_id=self.request.user.id, category__is_deleted=False)
-            .exclude(status=Goal.Status.archived)
+        return Goal.objects.select_related('user', 'category__board').filter(
+            Q(category__board__participants__user_id=self.request.user.id) & ~Q(status=Goal.Status.archived)
         )
 
-    def perform_destroy(self, instance: Goal) -> None:
+    def perform_destroy(self, instance: Goal):
         """Метод меняет статус цели как архивный"""
         instance.status = Goal.Status.archived
         instance.save(update_fields=('status',))
+        return instance
 
 
 class GoalCommentCreateView(CreateAPIView):
