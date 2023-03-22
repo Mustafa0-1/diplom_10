@@ -161,9 +161,7 @@ class GoalCommentListView(ListAPIView):
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка комментариев"""
-        return GoalComment.objects.select_related('goal__category__board', 'user').filter(
-            goal__category__board__participants__user_id=self.request.user.id
-        )
+        return GoalComment.objects.filter(user_id=self.request.user.id)
 
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
@@ -173,6 +171,4 @@ class GoalCommentView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         """Метод возвращает из базы queryset комментарии"""
-        return GoalComment.objects.select_related('goal__category__board', 'user').filter(
-            goal__category__board__participants__user_id=self.request.user.id
-        )
+        return GoalComment.objects.select_related('user').filter(user_id=self.request.user.id)
