@@ -19,7 +19,7 @@ services:
     restart: always
     environment:
       POSTGRES_HOST: db
-      DEBUG: True
+      DEBUG: 1
     depends_on:
       db:
         condition: service_healthy

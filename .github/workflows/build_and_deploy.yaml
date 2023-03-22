@@ -59,22 +59,13 @@ jobs:
           source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
-      - name: Run compose
+      - name: deploy app
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd diploma_10
-            docker compose pull
-            docker compose up -d
-      - name: Clear after deploy
-        if: always()
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            docker system prune -a -f
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          scrirt: |
+            cd todolist
+            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose down
+            echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
