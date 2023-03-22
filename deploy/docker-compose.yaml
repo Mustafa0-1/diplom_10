@@ -52,19 +52,12 @@ services:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     platform: linux/amd64
     restart: always
-    build:
-      target: dev_image
     env_file: .env
-    entrypoint: ''
     environment:
       POSTGRES_HOST: db
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#      api:
-#        condition: service_healthy
-    volumes:
-      - ./todolist/bot/:/opt/todolist/bot/
+    depends_on:
+      db:
+        condition: service_healthy
     command: python3 manage.py runbot
 
 
