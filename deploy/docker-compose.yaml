@@ -20,9 +20,9 @@ services:
     environment:
       POSTGRES_HOST: db
       DEBUG: 1
-#    depends_on:
-#      db:
-#        condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
 
 #  collect_static:
 #    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
@@ -55,9 +55,9 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: db
-    depends_on:
-      db:
-        condition: service_healthy
+#    depends_on:
+#      db:
+#        condition: service_healthy
     command: python3 manage.py runbot
 
 
