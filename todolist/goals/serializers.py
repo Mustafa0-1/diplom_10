@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.utils import timezone
 from django.utils.datetime_safe import date
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -54,8 +53,8 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_due_date(self, value: date) -> date:
-        if value and value < timezone.now().date():
-            raise ValidationError('Failed to set due date in the past')
+        # if value and value < timezone.now().date():
+        #     raise ValidationError('Failed to set due date in the past')
         return value
 
 
