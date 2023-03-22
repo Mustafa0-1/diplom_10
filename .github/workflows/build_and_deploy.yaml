@@ -43,6 +43,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: test env
+        run: |
+          envsubst
+          envsubst > deploy.env
+          cat deploy.env
       - name: clone code
         uses: actions/checkout@v2
       - name: render configs
