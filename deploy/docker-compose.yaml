@@ -4,10 +4,7 @@ services:
 
   db:
     image: postgres:12.4
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file: .env
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
     healthcheck:
