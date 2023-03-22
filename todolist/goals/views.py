@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions
@@ -118,12 +119,11 @@ class GoalListView(ListAPIView):
     ordering = ['title']
     search_fields = ['title', 'description']
 
-    def get_queryset(self) -> QuerySet[Goal]:
+    def get_queryset(self):
         """Метод возвращает из базы queryset списка целей"""
-        return Goal.objects.filter(
-            category__board__participants__user_id=self.request.user.id,
-            category__is_deleted=False
-        ).exclude(status=Goal.Status.archived)
+        return Goal.objects.select_related('user', 'category__board').filter(
+            Q(category__board__participants__user_id=self.request.user.id) & ~Q(status=Goal.Status.archived)
+        )
 
 
 class GoalView(RetrieveUpdateDestroyAPIView):
@@ -161,7 +161,7 @@ class GoalCommentListView(ListAPIView):
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка комментариев"""
-        return GoalComment.objects.filter(user_id=self.request.user.id)
+        return GoalComment.objects.filter(goal__category__board__participants__user_id=self.request.user.id)
 
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
