@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: render configs
         run: |
           mkdir deploy2
@@ -54,14 +54,14 @@ jobs:
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
           vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-          command: "ansible-vault decrypt deploy/.env"
+          command: "ansible-vault decrypt deploy2/.env"
       - name: Copy on Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy2/*"
+          source: "deploy2/docker-compose.yml,deploy2/.env"
           target: "diploma_10"
           strip_components: 1
       - name: Run compose
