@@ -58,7 +58,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy2/*"
+          source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
       - name: deploy app
