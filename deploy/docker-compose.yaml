@@ -4,7 +4,10 @@ services:
 
   db:
     image: postgres:12.4
-    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -15,8 +18,10 @@ services:
 
   api:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    env_file: .env
+    build:
+      target: dev_image
     restart: always
+    env_file: .env
     environment:
       POSTGRES_HOST: db
       DEBUG: 1
