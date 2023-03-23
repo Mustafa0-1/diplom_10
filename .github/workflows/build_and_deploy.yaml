@@ -22,7 +22,7 @@ jobs:
           target: prod_image
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
   build_and_push:
     runs-on: ubuntu-latest
