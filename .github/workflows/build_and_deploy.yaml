@@ -59,7 +59,6 @@ jobs:
           source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
-          overwrite: true
       - name: deploy app
         uses: appleboy/ssh-action@master
         with:
