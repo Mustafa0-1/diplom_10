@@ -112,7 +112,7 @@ class GoalListView(ListAPIView):
     """Ручка для отображения списка целей"""
     permission_classes = [GoalPermissions]
     serializer_class = GoalSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter, ]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_class = GoalDateFilter
     ordering_fields = ['title', 'created']
     ordering = ['title']
@@ -121,7 +121,7 @@ class GoalListView(ListAPIView):
     def get_queryset(self) -> QuerySet[Goal]:
         """Метод возвращает из базы queryset списка целей"""
         return Goal.objects.filter(
-            category__board__participants__user_id=self.request.user.id,
+            user_id=self.request.user.id,
             category__is_deleted=False
         ).exclude(status=Goal.Status.archived)
 
@@ -135,7 +135,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
         """Метод возвращает из базы queryset цели"""
         return (
             Goal.objects
-            .filter(category__board__participants__user_id=self.request.user.id, category__is_deleted=False)
+            .filter(user_id=self.request.user.id, category__is_deleted=False)
             .exclude(status=Goal.Status.archived)
         )
 
