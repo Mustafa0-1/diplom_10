@@ -47,6 +47,7 @@ jobs:
         uses: actions/checkout@v2
       - name: render configs
         run: |
+          mkdir deploy
           cat deploy/docker-compose.yaml | envsubst > deploy/docker-compose.yaml
           rm -f deploy/docker-compose.yaml
       - name: Decrypt .env
