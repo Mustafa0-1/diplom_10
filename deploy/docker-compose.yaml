@@ -4,14 +4,18 @@ services:
 
   db:
     image: postgres:12.4
-    env_file: .env
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
-#      interval: 3s
-#      timeout: 3s
-#      retries: 15
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 3s
+      timeout: 3s
+      retries: 15
 
   api:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
