@@ -49,8 +49,9 @@ jobs:
         uses: actions/checkout@v2
       - name: render configs
         run: |
-          cat deploy/docker-compose.yaml | envsubst > deploy/docker-compose.yml
-          cat deploy/.env | envsubst > deploy/.env
+          mkdir deploy3
+          cat deploy/docker-compose.yaml | envsubst > deploy3/docker-compose.yml
+          cat .env | envsubst > deploy3/.env
       - uses: actions/checkout@v3
       - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
@@ -62,7 +63,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/*"
+          source: "deploy3/*"
           target: "diploma_10"
           strip_components: 1
       - name: Run compose
