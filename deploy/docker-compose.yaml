@@ -44,9 +44,7 @@ services:
 #      depends_on:
 #        api:
 #          condition: service_healthy
-      volumes:
-        - ./nginx.conf:/etc/nginx/conf.d/default.conf
-        - django_static:/usr/share/nginx/html/static/
+
 
   bot:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
