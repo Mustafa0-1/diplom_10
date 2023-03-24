@@ -45,7 +45,6 @@ services:
 #        api:
 #          condition: service_healthy
 
-
   bot:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     platform: linux/amd64
@@ -61,4 +60,3 @@ services:
 
 volumes:
   diploma_pg_data:
-  django_static:
