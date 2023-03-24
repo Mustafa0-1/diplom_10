@@ -5,10 +5,6 @@ services:
   db:
     image: postgres:12.4
     env_file: .env
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -18,23 +14,26 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diploma_10:latest
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     env_file: .env
     restart: always
     environment:
       POSTGRES_HOST: db
-      DEBUG: True
-#    depends_on:
-#      db:
-#        condition: service_healthy
+      DEBUG: 1
+    depends_on:
+      db:
+        condition: service_healthy
 
-  collect_static:
-    image: keysmustafa/diploma_10:latest
-    env_file: .env
-    entrypoint: ''
-    volumes:
-      - django_static:/opt/static/
-    command: python3 manage.py collectstatic -c --no-input
+#  collect_static:
+#    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    env_file: .env
+#    entrypoint: ''
+#    volumes:
+#      - django_static:/opt/static/
+#    command: python3 manage.py collectstatic -c --no-input
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
@@ -50,22 +49,15 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
-    image: keysmustafa/diploma_10:latest
+    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     platform: linux/amd64
     restart: always
-    build:
-      target: dev_image
     env_file: .env
-    entrypoint: ''
     environment:
       POSTGRES_HOST: db
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#      api:
-#        condition: service_healthy
-    volumes:
-      - ./todolist/bot/:/opt/todolist/bot/
+    depends_on:
+      db:
+        condition: service_healthy
     command: python3 manage.py runbot
 
 
