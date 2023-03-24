@@ -1,4 +1,3 @@
-
 name: Test, build and deploy
 
 on:
@@ -25,12 +24,11 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
-
   build_and_push:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: docker build
         run: docker build -t keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: docker login
@@ -41,26 +39,25 @@ jobs:
       - name: docker push
         run: docker push keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: anthonykgross/ansible-vault-cli-github-action@v1
-        with:
-          vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-          command: "ansible-vault decrypt deploy/.env"
+      - name: clone code
+        uses: actions/checkout@v2
+      - name: render configs
+        run: |
+          cat deploy/docker-compose.yaml | envsubst > deploy/docker-compose.yml
       - name: Copy on Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/*"
+          source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
-      - name: Run compose
+      - name: deploy app
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -68,14 +65,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd diploma_10
-            docker compose pull
-            docker compose up -d
-      - name: Clear after deploy
-        if: always()
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            docker system prune -a -f
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose down
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
