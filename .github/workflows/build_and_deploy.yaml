@@ -44,11 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: render configs
         run: |
           cat deploy/docker-compose.yaml | envsubst > deploy2/docker-compose.yml
-          cat deploy/.env | envsubst > deploy2/.env
       - name: Decrypt .env
         uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
