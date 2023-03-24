@@ -4,7 +4,6 @@ services:
 
   db:
     image: postgres:12.4
-    restart: always
     env_file: .env
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
@@ -19,6 +18,7 @@ services:
     env_file: .env
     restart: always
     environment:
+      POSTGRES_HOST: db
       DEBUG: 1
     depends_on:
       db:
@@ -52,6 +52,9 @@ services:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     platform: linux/amd64
     restart: always
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
     depends_on:
       db:
         condition: service_healthy

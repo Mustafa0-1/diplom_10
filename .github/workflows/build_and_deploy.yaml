@@ -48,7 +48,7 @@ jobs:
       - name: render configs
         run: |
           cat deploy/docker-compose.yaml | envsubst > deploy2/docker-compose.yml
-          rm -f deploy/docker-compose.yaml
+          cat deploy/.env | envsubst > deploy2/.env
       - name: Decrypt .env
         uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
