@@ -71,8 +71,8 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd diploma_10
-            docker compose pull
-            docker compose up -d
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose down
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
       - name: Clear after deploy
         if: always()
         uses: appleboy/ssh-action@master
