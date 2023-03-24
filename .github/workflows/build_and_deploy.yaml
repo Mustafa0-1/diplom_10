@@ -25,6 +25,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
+
   build_and_push:
     runs-on: ubuntu-latest
     steps:
@@ -39,6 +40,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: docker push
         run: docker push keysmustafa/diploma_10:latest
+
 
   deploy:
     needs: build
