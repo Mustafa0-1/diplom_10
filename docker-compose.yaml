@@ -19,6 +19,7 @@ services:
       - "5432:5432"
 
   api:
+    image: keysmustafa/diploma_10:latest
     build:
       target: dev_image
     restart: always
@@ -34,6 +35,7 @@ services:
       - ./todolist/:/opt/todolist
 
   collect_static:
+    image: keysmustafa/diploma_10:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -59,6 +61,7 @@ services:
         - django_static:/usr/share/nginx/html/static/
 
   bot:
+    image: keysmustafa/diploma_10:latest
     platform: linux/amd64
     restart: always
     build:
