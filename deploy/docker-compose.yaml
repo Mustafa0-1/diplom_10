@@ -7,11 +7,11 @@ services:
     env_file: .env
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
-      interval: 3s
-      timeout: 3s
-      retries: 15
+#    healthcheck:
+#      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+#      interval: 3s
+#      timeout: 3s
+#      retries: 15
 
   api:
     image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
