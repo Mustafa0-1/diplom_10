@@ -7,7 +7,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from todolist.goals.filters import GoalDateFilter
 from todolist.goals.models import GoalCategory, Goal, GoalComment, BoardParticipant, Board
 from todolist.goals.permissions import BoardPermissions, GoalCategoryPermissions, GoalPermissions, \
-    GoalCommentsPermissions
+    GoalCommentsPermissions, IsOwnerOrReadOnly
 from todolist.goals.serializers import GoalCategoryCreateSerializer, GoalCategorySerializer, GoalCreateSerializer, \
     GoalSerializer, GoalCommentCreateSerializer, GoalCommentSerializer, BoardCreateSerializer, BoardSerializer
 
@@ -69,7 +69,7 @@ class GoalCategoryListView(ListAPIView):
     """Ручка для отображения списка категорий"""
     permission_classes = [GoalCategoryPermissions]
     serializer_class = GoalCategorySerializer
-    filter_backends = [filters.OrderingFilter, filters.SearchFilter, ]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['title', 'created']
     ordering = ['title']
     search_fields = ['title']
@@ -85,7 +85,7 @@ class GoalCategoryListView(ListAPIView):
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления категории"""
     serializer_class = GoalCategorySerializer
-    permission_classes = [GoalCategoryPermissions]
+    permission_classes = [GoalCategoryPermissions, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка категорий"""
@@ -120,22 +120,22 @@ class GoalListView(ListAPIView):
 
     def get_queryset(self) -> QuerySet[Goal]:
         """Метод возвращает из базы queryset списка целей"""
-        return Goal.objects.filter(
-            category__board__participants__user=self.request.user.id,
+        return Goal.objects.select_related('user', 'category__board').filter(
+            category__board__participants__user_id=self.request.user.id,
             category__is_deleted=False
         ).exclude(status=Goal.Status.archived)
 
 
 class GoalView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления цели"""
-    permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+    permission_classes = [GoalPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalSerializer
 
     def get_queryset(self) -> QuerySet[Goal]:
         """Метод возвращает из базы queryset цели"""
         return (
-            Goal.objects
-            .filter(category__board__participants__user=self.request.user.id, category__is_deleted=False)
+            Goal.objects.select_related('user', 'category__board')
+            .filter(category__board__participants__user_id=self.request.user.id, category__is_deleted=False)
             .exclude(status=Goal.Status.archived)
         )
 
@@ -166,7 +166,7 @@ class GoalCommentListView(ListAPIView):
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления комментария"""
-    permission_classes = [GoalCommentsPermissions]
+    permission_classes = [GoalCommentsPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalCommentSerializer
 
     def get_queryset(self):
