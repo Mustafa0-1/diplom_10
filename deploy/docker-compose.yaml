@@ -28,7 +28,7 @@ services:
         condition: service_healthy
 
   collect_static:
-    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: keysmustafa/diploma_10:latest
     build:
       context: .
       dockerfile: Dockerfile
