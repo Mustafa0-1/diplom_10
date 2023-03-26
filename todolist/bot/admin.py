@@ -7,5 +7,5 @@ from todolist.bot.models import TgUser
 @admin.register(TgUser)
 class TgUserAdmin(admin.ModelAdmin):
     """Класс модели для корректного отображения полей бота в Админ панели"""
-    list_display = ('chat_id', 'username', 'user')
+    list_display = ('chat_id', 'user')
     read_only_fields = ('chat_id', 'verification_code')
