@@ -18,15 +18,19 @@ services:
       retries: 15
 
   api:
-    image: keysmustafa/diploma_10:latest
-    env_file: .env
+    build:
+      target: dev_image
     restart: always
+    env_file: .env
     environment:
       POSTGRES_HOST: db
-      DEBUG: True
     depends_on:
       db:
         condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./todolist/:/opt/todolist
 
   collect_static:
     image: keysmustafa/diploma_10:latest
