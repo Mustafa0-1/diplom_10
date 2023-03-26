@@ -57,7 +57,7 @@ jobs:
           source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
-      - name: Run compose
+      - name: deploy app
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -65,5 +65,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd diploma_10
-            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose down
-            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose up -d
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose down
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose up -d
