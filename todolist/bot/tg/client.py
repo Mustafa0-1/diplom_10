@@ -1,6 +1,6 @@
 import requests
 
-from todolist.bot.tg.dc import GetUpdatesResponse, SendMessagesResponse
+from todolist.bot.tg.schemas import GetUpdatesResponse, SendMessagesResponse
 
 
 class TgClient:
