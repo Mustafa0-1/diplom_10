@@ -5,10 +5,7 @@ services:
   db:
     image: postgres:12.4
     restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file: .env
     volumes:
       - diploma_pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,16 +25,16 @@ services:
       db:
         condition: service_healthy
 
-  collect_static:
-    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file: .env
-    entrypoint: ''
-    volumes:
-      - django_static:/opt/static/
-    command: python3 manage.py collectstatic -c --no-input
+#  collect_static:
+#    image: keysmustafa/diploma_10:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    env_file: .env
+#    entrypoint: ''
+#    volumes:
+#      - django_static:/opt/static/
+#    command: python3 manage.py collectstatic -c --no-input
 
   frontend:
       image: sermalenk/skypro-front:lesson-38
