@@ -121,7 +121,7 @@ class GoalListView(ListAPIView):
     def get_queryset(self) -> QuerySet[Goal]:
         """Метод возвращает из базы queryset списка целей"""
         return Goal.objects.filter(
-            category__board__participants__user=self.request.user.id,
+            category__board__participants__user_id=self.request.user.id,
             category__is_deleted=False
         ).exclude(status=Goal.Status.archived)
 
@@ -135,7 +135,7 @@ class GoalView(RetrieveUpdateDestroyAPIView):
         """Метод возвращает из базы queryset цели"""
         return (
             Goal.objects
-            .filter(category__board__participants__user=self.request.user.id, category__is_deleted=False)
+            .filter(category__board__participants__user_id=self.request.user.id, category__is_deleted=False)
             .exclude(status=Goal.Status.archived)
         )
 
