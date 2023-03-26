@@ -44,7 +44,7 @@ class GetUpdatesResponse(BaseModel):
     result: list[UpdateObj] = []
 
 
-class SendMessagesResponse(BaseModel):
+class SendMessageResponse(BaseModel):
     """Модель бота для отправки сообщения"""
     ok: bool
     result: Message
