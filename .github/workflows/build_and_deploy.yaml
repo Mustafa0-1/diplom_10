@@ -62,7 +62,7 @@ jobs:
           source: "deploy2/docker-compose.yml"
           target: "diploma_10"
           strip_components: 1
-      - name: deploy app
+      - name: Run compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
