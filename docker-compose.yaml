@@ -1,3 +1,5 @@
+
+
 version: '3.8'
 
 services:
@@ -35,10 +37,8 @@ services:
       - ./todolist/:/opt/todolist
 
   collect_static:
-    image: keysmustafa/diploma_10:latest
     build:
-      context: .
-      dockerfile: Dockerfile
+      target: dev_image
     env_file: .env
     entrypoint: ''
     volumes:

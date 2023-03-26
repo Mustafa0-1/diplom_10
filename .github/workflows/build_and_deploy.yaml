@@ -24,11 +24,12 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:latest
 
+
   build_and_push:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
       - name: docker build
         run: docker build -t keysmustafa/diploma_10:latest .
       - name: docker login
@@ -39,14 +40,13 @@ jobs:
       - name: docker push
         run: docker push keysmustafa/diploma_10:latest
 
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: clone code
-        uses: actions/checkout@v3
-      - name: Decrypt .env
-        uses: anthonykgross/ansible-vault-cli-github-action@v1
+      - uses: actions/checkout@v3
+      - uses: anthonykgross/ansible-vault-cli-github-action@v1
         with:
           vault_key: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
           command: "ansible-vault decrypt deploy/.env"
@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/docker-compose.yaml"
+          source: "deploy/*"
           target: "diploma_10"
           strip_components: 1
       - name: Run compose

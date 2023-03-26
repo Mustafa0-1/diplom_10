@@ -4,7 +4,6 @@ services:
 
   db:
     image: postgres:12.4
-    restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -19,25 +18,17 @@ services:
 
   api:
     image: keysmustafa/diploma_10:latest
-    build:
-      target: dev_image
-    restart: always
     env_file: .env
+    restart: always
     environment:
       POSTGRES_HOST: db
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./todolist/:/opt/todolist
+      DEBUG: True
+#    depends_on:
+#      db:
+#        condition: service_healthy
 
   collect_static:
     image: keysmustafa/diploma_10:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
     env_file: .env
     entrypoint: ''
     volumes:
@@ -50,9 +41,9 @@ services:
       restart: always
       ports:
         - "80:80"
-      depends_on:
-        api:
-          condition: service_healthy
+#      depends_on:
+#        api:
+#          condition: service_healthy
       volumes:
         - ./nginx.conf:/etc/nginx/conf.d/default.conf
         - django_static:/usr/share/nginx/html/static/
@@ -61,12 +52,19 @@ services:
     image: keysmustafa/diploma_10:latest
     platform: linux/amd64
     restart: always
+    build:
+      target: dev_image
     env_file: .env
+    entrypoint: ''
     environment:
       POSTGRES_HOST: db
-    depends_on:
-      db:
-        condition: service_healthy
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      api:
+#        condition: service_healthy
+    volumes:
+      - ./todolist/bot/:/opt/todolist/bot/
     command: python3 manage.py runbot
 
 
