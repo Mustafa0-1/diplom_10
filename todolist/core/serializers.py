@@ -55,12 +55,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     """Класс модели сериализатора пользователя"""
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'username')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email')
 
 
 class UpdatePasswordSerializer(serializers.Serializer):
     """Класс модели сериализатора для смены пароля пользователя"""
-    old_password = PasswordField(required=True)
+    old_password = serializers.CharField(required=True, style={'input_type': 'password'}, write_only=True)
     new_password = PasswordField(required=True)
 
     def validate_old_password(self, old_password: str) -> str:
@@ -68,6 +68,9 @@ class UpdatePasswordSerializer(serializers.Serializer):
         if not self.instance.check_password(old_password):
             raise ValidationError('Password is incorrect')
         return old_password
+
+    def create(self, validated_data) -> User:
+        raise NotImplementedError
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Метод хэширует значение поля ['new_password'] и обновляет пароль пользователя в БД"""
