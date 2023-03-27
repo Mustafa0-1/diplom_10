@@ -7,7 +7,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from todolist.goals.filters import GoalDateFilter
 from todolist.goals.models import GoalCategory, Goal, GoalComment, BoardParticipant, Board
 from todolist.goals.permissions import BoardPermissions, GoalCategoryPermissions, GoalPermissions, \
-    GoalCommentsPermissions
+    GoalCommentsPermissions, IsOwnerOrReadOnly
 from todolist.goals.serializers import GoalCategoryCreateSerializer, GoalCategorySerializer, GoalCreateSerializer, \
     GoalSerializer, GoalCommentCreateSerializer, GoalCommentSerializer, BoardCreateSerializer, BoardSerializer
 
@@ -85,7 +85,7 @@ class GoalCategoryListView(ListAPIView):
 class GoalCategoryView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления категории"""
     serializer_class = GoalCategorySerializer
-    permission_classes = [GoalCategoryPermissions]
+    permission_classes = [GoalCategoryPermissions, IsOwnerOrReadOnly]
 
     def get_queryset(self):
         """Метод возвращает из базы queryset списка категорий"""
@@ -128,7 +128,7 @@ class GoalListView(ListAPIView):
 
 class GoalView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления цели"""
-    permission_classes = [permissions.IsAuthenticated, GoalPermissions]
+    permission_classes = [permissions.IsAuthenticated, GoalPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalSerializer
 
     def get_queryset(self) -> QuerySet[Goal]:
@@ -166,7 +166,7 @@ class GoalCommentListView(ListAPIView):
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
     """Ручка для отображения, редактирования и удаления комментария"""
-    permission_classes = [GoalCommentsPermissions]
+    permission_classes = [GoalCommentsPermissions, IsOwnerOrReadOnly]
     serializer_class = GoalCommentSerializer
 
     def get_queryset(self):

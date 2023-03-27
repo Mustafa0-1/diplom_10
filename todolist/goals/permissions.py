@@ -1,6 +1,20 @@
 from rest_framework import permissions
+from rest_framework.permissions import BasePermission
 
 from todolist.goals.models import BoardParticipant, Board, GoalCategory, Goal, GoalComment
+
+
+class IsOwnerOrReadOnly(BasePermission):
+    """Класс permission"""
+    def has_object_permission(self, request, view, obj):
+        """
+        Метод дает полные полномочия создателю (доски, категории, цели),
+        иначе только SAFE_METHODS('GET', 'HEAD', 'OPTIONS')
+        """
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.user_id == request.user.id
 
 
 class BoardPermissions(permissions.IsAuthenticated):
