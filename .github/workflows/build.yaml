@@ -21,7 +21,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          target: prod_image
           file: ./Dockerfile
+          target: prod_image
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/diploma_10:${{ env.BRANCH_NAME }}
