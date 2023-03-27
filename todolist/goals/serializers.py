@@ -27,7 +27,22 @@ class GoalCategorySerializer(serializers.ModelSerializer):
         """Мета-класс для указания модели для сериализатора, полей модели сериализатора, и не изменяемых полей"""
         model = GoalCategory
         fields = '__all__'
-        read_only_fields = ('id', 'created', 'updated', 'user')
+        read_only_fields = ('id', 'created', 'updated', 'user', 'board')
+
+    def validated_board(self, value: Board):
+        """
+        Метод для валидации данных доски. Метод проверяет не удалена ли доска
+        и является ли пользователь участником с ролью owner или writer
+        """
+        if value.is_deleted:
+            raise serializers.ValidationError('Not allowed to delete category')
+        if not BoardParticipant.objects.filter(
+                board=value,
+                role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+                user_id=self.context['request'].user.id
+        ).exists():
+            raise serializers.ValidationError('You must be owner or writer')
+        return value
 
 
 class GoalCreateSerializer(serializers.ModelSerializer):
